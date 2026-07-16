@@ -1,13 +1,14 @@
+package avance;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class PanelPaleta extends JPanel implements ActionListener {
+public class panelPaleta extends JPanel implements ActionListener {
 
     private VentanaPrincipal ventana;
     private JButton btnEtiqueta, btnBoton, btnCampoTexto, btnCombo, btnLista;
 
-    public PanelPaleta(VentanaPrincipal ventana) {
+    public panelPaleta(VentanaPrincipal ventana) {
         this.ventana = ventana;
         setLayout(new GridLayout(0, 1, 5, 5));
         setBorder(BorderFactory.createTitledBorder("Paleta"));

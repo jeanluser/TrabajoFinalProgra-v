@@ -1,3 +1,6 @@
+
+package avance;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,7 +15,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JTextField txtY;
     private JButton btnEliminar;
 
-    private PanelPaleta panelPaleta;
+    private panelPaleta panelPaleta;
     private JPanel panelLienzo;
     private DefaultListModel<String> modeloLista;
     private JList<String> listaComponentes;
@@ -44,7 +47,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         txtY = new JTextField(4);
         panelSuperior.add(txtY);
 
-        panelPaleta = new PanelPaleta(this);
+        panelPaleta = new panelPaleta(this);
 
         panelLienzo = new JPanel(null);
         panelLienzo.setBackground(Color.WHITE);
@@ -85,9 +88,29 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
 
     public void agregarComponente(TipoComponente tipo) {
-        String nombre = txtNombre.getText();
-        int x = Integer.parseInt(txtX.getText());
-        int y = Integer.parseInt(txtY.getText());
+        String nombre = txtNombre.getText().trim();
+        String strX = txtX.getText().trim();
+        String strY = txtY.getText().trim();
+
+        if (nombre.isEmpty() || strX.isEmpty() || strY.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Por favor, completa los campos Nombre, X e Y antes de agregar un componente.", 
+                "Campos vacíos", 
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int x, y;
+        try {
+            x = Integer.parseInt(strX);
+            y = Integer.parseInt(strY);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, 
+                "Los campos X e Y deben ser números enteros válidos.", 
+                "Error de formato", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         ComponenteVisual nuevoComponente;
         switch (tipo) {
@@ -100,11 +123,14 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             case COMBO:
                 nuevoComponente = new ComponenteCombo(nombre, x, y);
                 break;
+            case CAMPO_TEXTO:
+                nuevoComponente = new ComponenteCampoTexto(nombre, x, y);
+                break;
             case LISTA:
                 nuevoComponente = new ComponenteLista(nombre, x, y);
                 break;
             default:
-                nuevoComponente = new ComponenteCampoTexto(nombre, x, y);
+                return;
         }
 
         formulario.agregarComponente(nuevoComponente);
@@ -130,6 +156,10 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private void eliminarComponenteSeleccionado() {
         int indice = listaComponentes.getSelectedIndex();
         if (indice == -1) {
+            JOptionPane.showMessageDialog(this, 
+                "Selecciona un componente de la lista para eliminarlo.", 
+                "Sin selección", 
+                JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
