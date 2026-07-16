@@ -7,33 +7,31 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private Formulario formulario;
 
-    private JComboBox<TipoComponente> comboTipo;
     private JTextField txtNombre;
     private JTextField txtX;
     private JTextField txtY;
-    private JButton btnAgregar;
     private JButton btnEliminar;
 
+    private PanelPaleta panelPaleta;
     private JPanel panelLienzo;
     private DefaultListModel<String> modeloLista;
     private JList<String> listaComponentes;
     private ArrayList<JComponent> componentesSwing;
+
+    private JTextArea areaCodigo;
+    private int contador = 1;
 
     public VentanaPrincipal() {
         formulario = new Formulario();
         componentesSwing = new ArrayList<>();
 
         setTitle("Disenador de Formularios - Avance");
-        setSize(850, 550);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelSuperior.add(new JLabel("Tipo:"));
-        comboTipo = new JComboBox<>(TipoComponente.values());
-        panelSuperior.add(comboTipo);
-
         panelSuperior.add(new JLabel("Nombre:"));
         txtNombre = new JTextField(10);
         panelSuperior.add(txtNombre);
@@ -46,44 +44,50 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         txtY = new JTextField(4);
         panelSuperior.add(txtY);
 
-        btnAgregar = new JButton("Agregar al lienzo");
-        btnAgregar.addActionListener(this);
-        panelSuperior.add(btnAgregar);
+        panelPaleta = new PanelPaleta(this);
 
         panelLienzo = new JPanel(null);
         panelLienzo.setBackground(Color.WHITE);
-        panelLienzo.setPreferredSize(new Dimension(600, 500));
+        panelLienzo.setPreferredSize(new Dimension(500, 500));
 
-        JPanel panelLateral = new JPanel(new BorderLayout());
+        JPanel panelLista = new JPanel(new BorderLayout());
         modeloLista = new DefaultListModel<>();
         listaComponentes = new JList<>(modeloLista);
-        panelLateral.add(new JScrollPane(listaComponentes), BorderLayout.CENTER);
+        panelLista.add(new JScrollPane(listaComponentes), BorderLayout.CENTER);
 
         btnEliminar = new JButton("Eliminar seleccionado");
         btnEliminar.addActionListener(this);
-        panelLateral.add(btnEliminar, BorderLayout.SOUTH);
-        panelLateral.setPreferredSize(new Dimension(200, 400));
+        panelLista.add(btnEliminar, BorderLayout.SOUTH);
+        panelLista.setPreferredSize(new Dimension(250, 200));
+
+        areaCodigo = new JTextArea();
+        areaCodigo.setEditable(false);
+        JScrollPane scrollCodigo = new JScrollPane(areaCodigo);
+        scrollCodigo.setBorder(BorderFactory.createTitledBorder("Codigo generado"));
+
+        JPanel panelDerecho = new JPanel(new BorderLayout());
+        panelDerecho.add(panelLista, BorderLayout.NORTH);
+        panelDerecho.add(scrollCodigo, BorderLayout.CENTER);
+        panelDerecho.setPreferredSize(new Dimension(300, 500));
 
         add(panelSuperior, BorderLayout.NORTH);
+        add(panelPaleta, BorderLayout.WEST);
         add(new JScrollPane(panelLienzo), BorderLayout.CENTER);
-        add(panelLateral, BorderLayout.EAST);
+        add(panelDerecho, BorderLayout.EAST);
 
         setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnAgregar) {
-            agregarComponente();
-        } else if (e.getSource() == btnEliminar) {
+        if (e.getSource() == btnEliminar) {
             eliminarComponenteSeleccionado();
         }
     }
 
-    private void agregarComponente() {
+    public void agregarComponente(TipoComponente tipo) {
         String nombre = txtNombre.getText();
         int x = Integer.parseInt(txtX.getText());
         int y = Integer.parseInt(txtY.getText());
-        TipoComponente tipo = (TipoComponente) comboTipo.getSelectedItem();
 
         ComponenteVisual nuevoComponente;
         switch (tipo) {
@@ -92,6 +96,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 break;
             case BOTON:
                 nuevoComponente = new ComponenteBoton(nombre, x, y);
+                break;
+            case COMBO:
+                nuevoComponente = new ComponenteCombo(nombre, x, y);
+                break;
+            case LISTA:
+                nuevoComponente = new ComponenteLista(nombre, x, y);
                 break;
             default:
                 nuevoComponente = new ComponenteCampoTexto(nombre, x, y);
@@ -106,6 +116,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelLienzo.repaint();
 
         modeloLista.addElement(tipo + " - " + nombre + " (" + x + ", " + y + ")");
+
+        String variable = "comp" + contador;
+        contador++;
+        areaCodigo.append(nuevoComponente.generarCodigo(variable));
+        areaCodigo.append("\n");
 
         txtNombre.setText("");
         txtX.setText("");
