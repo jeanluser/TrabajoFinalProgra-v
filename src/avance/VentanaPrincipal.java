@@ -5,6 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class VentanaPrincipal extends JFrame implements ActionListener {
 
@@ -92,6 +95,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         String strX = txtX.getText().trim();
         String strY = txtY.getText().trim();
 
+  
         if (nombre.isEmpty() || strX.isEmpty() || strY.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
                 "Por favor, completa los campos Nombre, X e Y antes de agregar un componente.", 
@@ -126,9 +130,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             case CAMPO_TEXTO:
                 nuevoComponente = new ComponenteCampoTexto(nombre, x, y);
                 break;
-            case LISTA:
+            case LISTA: 
                 nuevoComponente = new ComponenteLista(nombre, x, y);
-                break;
+                break;    
             default:
                 return;
         }
@@ -138,6 +142,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         JComponent componenteSwing = nuevoComponente.crearSwing();
         componentesSwing.add(componenteSwing);
         panelLienzo.add(componenteSwing);
+        habilitarArrastre(componenteSwing);
         panelLienzo.revalidate();
         panelLienzo.repaint();
 
@@ -175,4 +180,24 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelLienzo.revalidate();
         panelLienzo.repaint();
     }
+    private void habilitarArrastre(JComponent componente) {
+    MouseAdapter arrastre = new MouseAdapter() {
+        private Point puntoInicial;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            puntoInicial = e.getPoint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            Point ubicacionActual = componente.getLocation();
+            int nuevoX = ubicacionActual.x + e.getX() - puntoInicial.x;
+            int nuevoY = ubicacionActual.y + e.getY() - puntoInicial.y;
+            componente.setLocation(nuevoX, nuevoY);
+        }
+    };
+    componente.addMouseListener(arrastre);
+    componente.addMouseMotionListener(arrastre);
+}
 }
