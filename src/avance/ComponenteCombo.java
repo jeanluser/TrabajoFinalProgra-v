@@ -24,7 +24,9 @@ public class ComponenteCombo extends ComponenteVisual {
     
     @Override
     public String generarCodigo(String variable) {
-        return "JComboBox " + variable + " = new JComboBox(opciones);\n"
-             + variable + ".setBounds(" + x + ", " + y + ", 140, 28);\n";
+        String comentario = "// Clase: ComponenteCombo | Constructor: ComponenteCombo(nombre, x, y)\n";
+        String codigo = "JComboBox " + variable + " = new JComboBox(opciones);\n"
+                      + variable + ".setBounds(" + x + ", " + y + ", 140, 28);\n";
+        return comentario + codigo;
     }
 }

@@ -22,7 +22,9 @@ public class ComponenteCampoTexto extends ComponenteVisual {
     
     @Override
     public String generarCodigo(String variable) {
-        return "JTextField " + variable + " = new JTextField(\"" + nombre + "\");\n"
-             + variable + ".setBounds(" + x + ", " + y + ", 140, 28);\n";
+        String comentario = "// Clase: ComponenteCampoTexto | Constructor: ComponenteCampoTexto(nombre, x, y)\n";
+        String codigo = "JTextField " + variable + " = new JTextField(\"" + nombre + "\");\n"
+                      + variable + ".setBounds(" + x + ", " + y + ", 140, 28);\n";
+        return comentario + codigo;
     }
 }

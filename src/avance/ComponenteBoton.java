@@ -22,7 +22,9 @@ public class ComponenteBoton extends ComponenteVisual {
     
     @Override
     public String generarCodigo(String variable) {
-        return "JButton " + variable + " = new JButton(\"" + nombre + "\");\n"
-             + variable + ".setBounds(" + x + ", " + y + ", 120, 30);\n";
+        String comentario = "// Clase: ComponenteBoton | Constructor: ComponenteBoton(nombre, x, y)\n";
+        String codigo = "JButton " + variable + " = new JButton(\"" + nombre + "\");\n"
+                      + variable + ".setBounds(" + x + ", " + y + ", 120, 30);\n";
+        return comentario + codigo;
     }
 }

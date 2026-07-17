@@ -22,7 +22,9 @@ public class ComponenteEtiqueta extends ComponenteVisual {
     
     @Override
     public String generarCodigo(String variable) {
-        return "JLabel " + variable + " = new JLabel(\"" + nombre + "\");\n"
-             + variable + ".setBounds(" + x + ", " + y + ", 120, 25);\n";
+        String comentario = "// Clase: ComponenteEtiqueta | Constructor: ComponenteEtiqueta(nombre, x, y)\n";
+        String codigo = "JLabel " + variable + " = new JLabel(\"" + nombre + "\");\n"
+                      + variable + ".setBounds(" + x + ", " + y + ", 120, 25);\n";
+        return comentario + codigo;
     }
 }
